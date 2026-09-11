@@ -1,0 +1,38 @@
+name: Maven Build and Tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Lädt den Inhalt des GitHub-Repositories auf den Build-Server.
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+
+      # Installiert die gleiche Java-Version, die auch das Projekt verwendet.
+      - name: Java 17 einrichten
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      # Kompiliert den Code, führt Tests aus und erstellt den JaCoCo-Bericht.
+      - name: Maven Build und Tests ausführen
+        run: mvn --batch-mode --no-transfer-progress clean verify
+
+      # Macht den Coverage-Bericht nach einem erfolgreichen Build herunterladbar.
+      - name: Test-Coverage-Bericht speichern
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: target/site/jacoco/
