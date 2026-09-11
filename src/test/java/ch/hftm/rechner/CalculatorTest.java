@@ -19,7 +19,7 @@ class CalculatorTest {
 	@Test
 	void addPositiveIntegers() {
 		double result = calculator.add(5, 2);
-		assertEquals(8, result, 0.001);
+		assertEquals(7, result, 0.001);
 	}
 
 	@Test
